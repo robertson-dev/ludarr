@@ -13,7 +13,7 @@
 [![Docker](https://img.shields.io/badge/deploy-Docker%20%2F%20Unraid-2496ed?logo=docker&logoColor=white)](#-run)
 [![Plugins](https://img.shields.io/badge/plugins-6%20kinds-6b5bff)](#-writing-a-plugin)
 
-[Features](#-features) · [Pipeline](#-the-pipeline) · [Run](#-run) · [Layout](#-layout) · [Plugins](#-writing-a-plugin)
+[Quick setup](#-quick-setup) · [Features](#-features) · [Pipeline](#-the-pipeline) · [Run](#-run) · [Layout](#-layout) · [Plugins](#-writing-a-plugin)
 
 </div>
 
@@ -22,6 +22,35 @@
 > **Formerly playarr, then arcadearr.** A server set up under the old name keeps working as it is: what it has under
 > that name is still read (`src/former.ts`). Player-facing things (accounts, friends, discovery, the desktop
 > app) live in **[Ahoy](https://github.com/robertson-dev/ahoy)**, which is this engine's only client.
+
+## ⚡ Quick setup
+
+From nothing to a first game. You need Docker, an indexer (Prowlarr, or any Torznab or Newznab feed) and a download
+client (rTorrent or NZBGet).
+
+1. **Build and start it.**
+
+   ```sh
+   git clone https://github.com/robertson-dev/ludarr.git && cd ludarr
+   docker build -t ludarr .
+   docker run -d --name ludarr -p 7979:7979 \
+     -v ./config:/config -v ./downloads:/downloads -v ./games:/games \
+     ludarr
+   ```
+
+   `/config` keeps the database, plugins and backups, `/games` is the library, and `/downloads` is where a download
+   ludarr transfers itself lands. On Unraid, `deploy/unraid.py` does this step (see [Run](#-run)).
+
+2. **Open `http://<host>:7979`.** It starts without a sign-in, for a trusted network. Turn on *Settings → General →
+   Authentication* before it can be reached from anywhere else.
+3. **Add an indexer** under *Settings → Indexers* and press *Test*.
+4. **Add a download client** under *Settings → Download Clients*. Mount the client's finished folder into the
+   container (for example `-v /path/to/finished:/remote`) and fill in *Remote path mapping*, so finished files are
+   read where they are.
+5. **Add a game** under *Add New*. It is searched for, downloaded, imported and verified by itself; *Activity* shows
+   how far it is.
+6. **Connect Ahoy.** Copy the API key from *Settings → General*. [Ahoy](https://github.com/robertson-dev/ahoy) asks
+   for this server's address and that key at its first run, and players then install the game from the desktop app.
 
 ## ✨ Features
 
@@ -108,14 +137,8 @@ SSH connector (`src/bosun/`, compiled and shipped to the box) is the legacy opti
 
 **Docker**
 
-```sh
-docker build -t ludarr .
-docker run -d --name ludarr -p 7979:7979 \
-  -v ./config:/config -v ./downloads:/downloads -v ./games:/games \
-  ludarr
-```
-
-Open `http://<host>:7979`. The API key is under *Settings → General*; every `/api/v1` call needs `X-Api-Key`.
+The build and run commands are step 1 of the [quick setup](#-quick-setup). The API key is under
+*Settings → General*; every `/api/v1` call needs `X-Api-Key`.
 
 **Unraid**
 
