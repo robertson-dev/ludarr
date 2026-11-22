@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>ludarr</Name>
+  <Repository>ludarr:latest</Repository>
+  <Registry/>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support/>
+  <Project/>
+  <Overview>ludarr is a Sonarr/Radarr-style manager for PC games: monitor games, search your indexers (Prowlarr, Torznab, Newznab), send releases to a seedbox or download client, import them into installable game folders (archives, GOG installers, scene ISOs under wine, an AI importer for the rest), and keep a catalog of every way to play a game on a PC (native, recompilations, decomp ports, emulators). Plugins extend every part.</Overview>
+  <Category>Downloaders: MediaApp:Other</Category>
+  <WebUI>http://[IP]:[PORT:7979]/</WebUI>
+  <TemplateURL/>
+  <Icon>http://[IP]:[PORT:7979]/favicon.svg</Icon>
+  <ExtraParams>--env-file /mnt/user/appdata/ludarr/ludarr.env</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DonateText/>
+  <DonateLink/>
+  <Description>Sonarr/Radarr-style manager for PC games. Settings live in the web UI; secrets (indexer keys, seedbox login, AI key) can be seeded once from /mnt/user/appdata/ludarr/ludarr.env.</Description>
+  <Networking>
+    <Mode>bridge</Mode>
+    <Publish>
+      <Port>
+        <HostPort>7979</HostPort>
+        <ContainerPort>7979</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+    </Publish>
+  </Networking>
+  <Data>
+    <Volume>
+      <HostDir>/mnt/user/appdata/ludarr</HostDir>
+      <ContainerDir>/config</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/downloads/ahoy</HostDir>
+      <ContainerDir>/downloads</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/games/ludarr</HostDir>
+      <ContainerDir>/library</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+    <Volume>
+      <HostDir>/mnt/user/downloads/finished</HostDir>
+      <ContainerDir>/arrivals</ContainerDir>
+      <Mode>rw</Mode>
+    </Volume>
+  </Data>
+  <Environment>
+    <Variable>
+      <Value>7979</Value>
+      <Name>PORT</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>/library</Value>
+      <Name>LUDARR_GAMES</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>/library/.work</Value>
+      <Name>LUDARR_WORK</Name>
+      <Mode/>
+    </Variable>
+  </Environment>
+  <Labels/>
+  <Config Name="Web UI" Target="7979" Default="7979" Mode="tcp" Description="the port ludarr listens on" Type="Port" Display="always" Required="true" Mask="false">7979</Config>
+  <Config Name="Config" Target="/config" Default="/mnt/user/appdata/ludarr" Mode="rw" Description="database, plugins, backups" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/ludarr</Config>
+  <Config Name="Downloads" Target="/downloads" Default="/mnt/user/downloads/ludarr" Mode="rw" Description="a download ludarr transfers itself lands here before import" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/downloads/ahoy</Config>
+  <Config Name="Games" Target="/library" Default="/mnt/user/games/ludarr" Mode="rw" Description="the root folder: imported, installable game folders" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/games/ludarr</Config>
+  <Config Name="SSD staging" Target="/ssd" Default="/mnt/cache/ludarr-staging" Mode="rw" Description="Optional SSD folder for Ludarr downloads and import work. Select /ssd under Media Management to use it." Type="Path" Display="always" Required="false" Mask="false">/mnt/cache/ludarr-staging</Config>
+  <Config Name="Remote downloads" Target="/remote" Default="/mnt/addons/seedbox" Mode="rw,slave" Description="the download client's finished folder, mounted on Unraid (deploy/seedbox-mount.py sets up an rclone mount of the seedbox): seeding cleanup and the fallback import from the seedbox read it; map it under Settings → Download Clients → Remote path mapping, e.g. /home/user/downloads=/remote/downloads" Type="Path" Display="always" Required="false" Mask="false">/mnt/addons/seedbox</Config>
+  <Config Name="Finished downloads" Target="/arrivals" Default="/mnt/user/downloads/finished" Mode="rw" Description="downloads/finished: where everything you download ends up (your own sync moves the seedbox's finished downloads there; Sonarr and Radarr import from it). ludarr finds each of its downloads there by its name and imports it in place, keeping its files from the folder's cleanup until the import is done. Settings → Media Management → Finished downloads land in reads this folder by default" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/downloads/finished</Config>
+  <Config Name="Root folder inside the container" Target="LUDARR_GAMES" Default="/library" Mode="" Description="must match the Games mount" Type="Variable" Display="advanced" Required="false" Mask="false">/library</Config>
+  <Config Name="Work folder" Target="LUDARR_WORK" Default="/library/.work" Mode="" Description="scratch space for imports; keep it on the games volume" Type="Variable" Display="advanced" Required="false" Mask="false">/library/.work</Config>
+</Container>

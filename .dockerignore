@@ -1,0 +1,10 @@
+node_modules
+web/node_modules
+web/dist
+public
+dist
+*.db
+*.db-*
+*.log
+.env
+config

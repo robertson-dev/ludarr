@@ -1,0 +1,17 @@
+# Ludarr (the engine; formerly playarr, then arcadearr)
+node_modules/
+*.db
+*.db-shm
+*.db-wal
+*.log
+.env
+.env.*
+!.env.example
+# built from web/ (bun run build:web; the Dockerfile builds it too)
+/public/
+# the bosun connector binary (bun run build:bosun)
+/dist/
+# dead copy; the launcher lives in the ahoy-launcher repo
+launcher/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,26 @@
+# ludarr — docker compose (Unraid users: see unraid/my-ludarr.xml and deploy/unraid.py instead).
+# Everything is configured in the web UI; the environment only seeds plugin instances on first boot.
+services:
+  ludarr:
+    build: .
+    image: ludarr:latest
+    container_name: ludarr
+    restart: unless-stopped
+    ports:
+      - "7979:7979"
+    environment:
+      PORT: "7979"
+      LUDARR_GAMES: /games
+      # optional, seeded once into Settings on the first boot:
+      PROWLARR_URL: ${PROWLARR_URL:-}
+      PROWLARR_API_KEY: ${PROWLARR_API_KEY:-}
+      SEEDBOX_SSH_HOST: ${SEEDBOX_SSH_HOST:-}
+      SEEDBOX_SSH_USER: ${SEEDBOX_SSH_USER:-}
+      SEEDBOX_SSH_PASS: ${SEEDBOX_SSH_PASS:-}
+      SEEDBOX_WEB_PASS: ${SEEDBOX_WEB_PASS:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+      - ./games:/games

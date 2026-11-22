@@ -1,0 +1,26 @@
+{
+  "name": "ludarr",
+  "version": "0.1.0",
+  "description": "Sonarr/Radarr-style manager for PC games: search, download, import, emulators and ports, plugins.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot src/main.ts",
+    "start": "bun run src/main.ts",
+    "test": "bun test",
+    "simulate": "bun test ./tests/job-simulation.test.ts ./tests/carry-live.test.ts ./tests/ways-make-converters.test.ts ./tests/portability.test.ts ./tests/ways-assemble-live.test.ts ./tests/agent-usage.test.ts",
+    "typecheck": "tsc --noEmit",
+    "build:web": "cd web && bun install && bun run build",
+    "build:bosun": "bun build --compile --target=bun-linux-x64 --minify src/bosun/main.ts --outfile dist/bosun-linux-x64"
+  },
+  "dependencies": {
+    "hash-wasm": "4.12.0",
+    "hono": "^4.6.0",
+    "ssh2": "1.16.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "@types/ssh2": "^1.15.6",
+    "typescript": "^5.6.0"
+  }
+}
